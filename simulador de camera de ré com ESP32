@@ -1,0 +1,61 @@
+#include <Arduino.h>
+ #include <Wire.h>
+
+
+#include <NewPing.h>
+const int LED_PIN = 22; //led no pino 2
+const int LED_PIN2 = 21;
+
+#define TRIG_PIN  17  // Pino de saída do trigger do sensor
+#define ECHO_PIN      16  // Pino de entrada do eco do sensor
+
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(LED_PIN2, OUTPUT);
+
+}
+
+void loop() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH);
+
+  // Calcula a distância com base na duração do pulso ultrassônico
+  // A velocidade do som é aproximadamente 343 metros por segundo
+  // A fórmula para calcular a distância é: distância = (duração / 2) * velocidade do som
+  float distance = (duration / 2.0) * 0.0343;
+  int i = 0;
+  Serial.print("Distância: ");
+  Serial.println(distance);
+
+  // Se a distância for menor que um certo valor (indicando detecção de movimento próximo)
+  // ligue o LED, caso contrário, desligue-o
+  if (distance <= 10) { // Ajuste este valor conforme necessário
+   // while (distance<=10)
+ //   {
+       digitalWrite(LED_PIN, HIGH);
+       delay(50);
+       digitalWrite(LED_PIN, LOW);
+ //   }
+     
+  } else if(distance > 10) {
+    digitalWrite(LED_PIN2, HIGH);
+  }
+
+  Serial.print("Distancia: ");
+  Serial.println(distance);
+
+  delay(100); // Aguarda um segundo antes de realizar a próxima leitura
+  digitalWrite(LED_PIN2, LOW);
+
+
+
+}
